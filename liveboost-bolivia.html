@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LiveBoost Bolivia — Live Shopping en TikTok</title>
+<style>
+:root,[data-theme="neon"]{--bg:#0d0221;--bg2:#1a0b3b;--card:#241150;--line:#3d2380;--a1:#ff2d95;--a2:#c6ff3d;--a3:#ffc83d;--a4:#2de2ff;--text:#f5f0ff;--muted:#a99bd1;--ink:#14052e}
+[data-theme="sunset"]{--bg:#1b0a0a;--bg2:#2c0f0c;--card:#3a1410;--line:#6b2a1c;--a1:#ff5e3a;--a2:#ffd23f;--a3:#ff9f1c;--a4:#ff3d81;--text:#fff1e8;--muted:#d9a893;--ink:#2a0b05}
+[data-theme="ocean"]{--bg:#00152b;--bg2:#02203f;--card:#06294d;--line:#0f4c81;--a1:#00c2ff;--a2:#3dffb5;--a3:#ffe14d;--a4:#7b8cff;--text:#e8f6ff;--muted:#8fb4d1;--ink:#001a33}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 20% 0%,var(--bg2),var(--bg) 60%);color:var(--text);min-height:100vh}
+h3{margin:14px 0 8px;font-size:1.05rem}h4{margin:12px 0 6px}
+.muted{color:var(--muted);font-size:.85rem}
+button{font-family:inherit;border:none;border-radius:10px;padding:8px 14px;font-weight:800;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px);filter:brightness(1.1)}button:active{transform:scale(.96)}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:12px 16px;background:linear-gradient(90deg,var(--a1),var(--a4))}
+.brand{display:flex;gap:10px;align-items:center;color:var(--ink)}.logo{font-size:2rem}
+.brand h1{font-size:1.3rem;font-weight:900}.brand h1 span{color:#fff}.brand p{font-size:.75rem;font-weight:600}
+.top-stats{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--ink);color:var(--text);padding:6px 12px;border-radius:20px;font-size:.82rem;font-weight:700}
+.pill.live{background:#e60023;color:#fff;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(230,0,35,0);transform:scale(1.05)}}
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;max-width:1200px;margin:16px auto;padding:0 12px}
+.log-panel{grid-column:1/-1}.col-side{display:flex;flex-direction:column;gap:16px}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.live-card,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:20px}
+.tab.active{background:var(--a1);color:#fff;border-color:var(--a1)}
+.stage{position:relative;overflow:hidden;border-radius:14px;min-height:270px;display:flex;flex-direction:column;justify-content:space-between;padding:12px;background:linear-gradient(135deg,var(--a1),var(--bg2),var(--a4));background-size:300% 300%;animation:bg 8s ease infinite;cursor:pointer;user-select:none}
+@keyframes bg{50%{background-position:100% 50%}}
+.stage-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.host-name{font-weight:800;flex:1;text-shadow:0 2px 6px rgba(0,0,0,.6)}
+.host{font-size:5rem;text-align:center;animation:bounce 2s infinite}
+@keyframes bounce{50%{transform:translateY(-10px)}}
+.stage-text{text-align:center;font-size:.82rem;text-shadow:0 2px 6px rgba(0,0,0,.7)}
+.stage-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.hearts{position:absolute;inset:0;pointer-events:none}
+.heart{position:absolute;font-size:28px;animation:up 1.4s ease-out forwards}
+@keyframes up{0%{transform:translate(-50%,0) scale(.6);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),-190px) scale(1.7);opacity:0}}
+.btn-like{background:#fff;color:#e60023}.btn-ghost{background:var(--bg2);color:var(--text);border:1px solid var(--line)}
+.btn-flash{background:var(--a3);color:var(--ink)}.btn-follow{background:var(--a2);color:var(--ink)}
+.btn-follow.on{background:var(--bg2);color:var(--a2);border:1px solid var(--a2)}
+.btn-send{background:var(--a4);color:var(--ink)}
+.btn-buy{background:linear-gradient(90deg,var(--a1),var(--a3));color:#fff;width:100%;padding:12px;font-size:1rem}
+.btn-offer{background:var(--a1);color:#fff;width:100%;margin-top:8px}
+.offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+.offer{position:relative;background:var(--bg2);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center;cursor:pointer;transition:.2s;animation:pop .4s}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.offer:hover{border-color:var(--a1);transform:translateY(-4px)}
+.offer.wish{border-color:var(--a3)}.offer.wish::after{content:"⭐";position:absolute;top:6px;right:8px}
+.offer.flash{border-color:var(--a3);animation:glow 1s infinite alternate}
+@keyframes glow{to{box-shadow:0 0 18px var(--a3)}}
+.offer-emoji{font-size:2.5rem}.offer h4{font-size:.92rem}
+.tag{position:absolute;top:6px;left:6px;background:var(--a2);color:var(--ink);font-size:.72rem;font-weight:900;padding:2px 7px;border-radius:8px}
+.price s{color:var(--muted);font-size:.8rem}.price b{color:var(--a2)}
+.timer{display:block;color:var(--a3);font-weight:800;font-size:.8rem;margin-top:4px}
+.preview{margin-top:10px;padding:10px;border-radius:10px;background:var(--bg);border-left:4px solid var(--a4);font-size:.86rem;min-height:42px}
+.chat-box{height:160px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.msg b{color:var(--a4)}.msg.mio b{color:var(--a2)}.msg.host b{color:var(--a1)}.msg.sys{color:var(--muted);font-style:italic}
+.chat-row{display:flex;gap:8px;margin-top:8px}.chat-row input{flex:1}
+label{display:block;margin:10px 0 4px;font-size:.84rem;font-weight:700;color:var(--muted)}
+input[type=text],input[type=tel],input[type=number],select{width:100%;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--text);font-size:.95rem;outline:none}
+input:focus,select:focus{border-color:var(--a1)}
+fieldset{border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-top:12px}
+legend{padding:0 6px;font-size:.8rem;color:var(--muted)}
+.radio{margin:6px 0;cursor:pointer;color:var(--text)}
+.total-box{margin:12px 0;padding:12px;text-align:center;font-weight:900;font-size:1.1rem;border-radius:12px;background:var(--bg);color:var(--a2);border:1px solid var(--line)}
+.form-msg{padding:8px 10px;border-radius:8px;margin-bottom:8px;font-size:.85rem}
+.form-msg.error{background:rgba(230,0,35,.2);color:#ff8da0}.form-msg.ok{background:rgba(60,255,150,.15);color:var(--a2)}
+.orders,.cart{list-style:none;max-height:170px;overflow-y:auto}
+.orders li,.cart li{padding:8px 10px;margin-bottom:6px;background:var(--bg);border-radius:8px;font-size:.84rem;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.cart button{background:none;color:#ff6b81;padding:0 4px;font-size:1.1rem}
+.cart-actions{display:flex;gap:8px}.cart-actions .btn-buy{flex:1}
+.log-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}.log-head h3{margin:0}
+.log-actions{display:flex;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:16px;font-size:.8rem}
+.chip i{font-style:normal;background:var(--a1);color:#fff;border-radius:10px;padding:1px 7px;margin-left:4px}
+.chip.active{background:var(--a4);color:var(--ink);border-color:var(--a4)}
+.log-box{background:#05010f;border-radius:10px;padding:10px;height:250px;overflow-y:auto;font-family:Consolas,monospace;font-size:.8rem}
+.log-row{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.05);animation:slide .3s}
+@keyframes slide{from{opacity:0;transform:translateX(-12px)}}
+.log-time{color:var(--muted)}
+.t-click b{color:var(--a4)}.t-dblclick b{color:var(--a1)}.t-keyup b{color:var(--a3)}.t-change b{color:var(--a2)}.t-submit b{color:#4dff88}
+.t-sistema b,.t-mouse b,.t-context b,.t-focus b,.t-chat b,.t-keydown b{color:#b39ddb}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:50;background:var(--a2);color:var(--ink);padding:10px 18px;border-radius:20px;font-weight:800;animation:pop .3s}
+footer{text-align:center;padding:18px;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body data-theme="neon">
+<header class="topbar">
+  <div class="brand"><span class="logo">🚀</span><div><h1>LiveBoost <span>Bolivia</span></h1><p>Lives de ventas en TikTok para cualquier empresa</p></div></div>
+  <div class="top-stats">
+    <span class="pill live">● EN VIVO</span><span class="pill" id="viewers">👁 0</span><span class="pill" id="liveClock">⏱ 00:00:00</span>
+    <button class="pill" id="themeBtn">🎨 Tema</button>
+  </div>
+</header>
+<main class="layout">
+  <section>
+    <div id="liveContainer" class="live-card">
+      <nav class="tabs">
+        <button class="tab active" data-brand="tech">🎧 TechZone</button>
+        <button class="tab" data-brand="moda">👟 ModaBo</button>
+        <button class="tab" data-brand="sabor">🍫 SaborAndino</button>
+      </nav>
+      <div id="stage" class="stage">
+        <div class="stage-top"><span class="pill live">● LIVE</span><span id="hostName" class="host-name"></span><button class="btn-follow" data-action="follow">+ Seguir</button></div>
+        <div id="hostEmoji" class="host">🧑‍💻</div>
+        <p class="stage-text">Doble clic en la pantalla para lanzar ❤️</p>
+        <div id="hearts" class="hearts"></div>
+        <div class="stage-bar">
+          <button class="btn-like" data-action="like">❤️ <span id="likeCount">0</span></button>
+          <button class="btn-ghost" data-action="share">↗ Compartir</button>
+          <button class="btn-flash" data-action="flash">⚡ Oferta relámpago</button>
+        </div>
+      </div>
+      <h3>🛍️ Ofertas en pantalla</h3>
+      <div id="offers" class="offers"></div>
+      <div id="preview" class="preview"></div>
+      <h3>💬 Chat del Live</h3>
+      <div id="chatBox" class="chat-box"></div>
+      <div class="chat-row">
+        <input type="text" id="chatInput" maxlength="80" placeholder="Pregunta al vendedor en directo..." autocomplete="off">
+        <button class="btn-send" data-action="send">Enviar</button>
+      </div>
+      <small id="charCount" class="muted">0/80</small>
+    </div>
+  </section>
+  <aside class="col-side">
+    <section id="checkoutPanel" class="panel">
+      <h3>⚡ Checkout Rápido en Vivo</h3>
+      <p class="muted" id="salesStat">Ventas del live: 0 · Bs 0.00</p>
+      <form id="orderForm" novalidate>
+        <label for="productSelect">Producto</label><select id="productSelect"></select>
+        <label for="variantSelect">Variante</label><select id="variantSelect"></select>
+        <label for="qty">Cantidad</label><input type="number" id="qty" min="1" value="1">
+        <label for="userTikTok">Usuario de TikTok</label><input type="text" id="userTikTok" placeholder="@usuario_live">
+        <label for="phone">Celular (Bolivia)</label><input type="tel" id="phone" placeholder="7XXXXXXX" maxlength="8">
+        <fieldset><legend>Método de pago</legend>
+          <label class="radio"><input type="radio" name="pago" value="QR Simple" checked> 📱 QR Simple</label>
+          <label class="radio"><input type="radio" name="pago" value="Efectivo contra entrega"> 💵 Contra entrega</label>
+          <label class="radio"><input type="radio" name="pago" value="Tarjeta"> 💳 Tarjeta (+3%)</label>
+        </fieldset>
+        <div id="totalBox" class="total-box">Total: Bs 0.00</div>
+        <p id="formMsg" class="form-msg" hidden></p>
+        <button type="submit" class="btn-buy">⚡ Confirmar compra en directo</button>
+      </form>
+      <h4>🧾 Pedidos confirmados</h4>
+      <ul id="ordersList" class="orders"><li class="muted">Esperando pedidos del Live...</li></ul>
+    </section>
+    <section id="cartPanel" class="panel">
+      <h3>🛒 Carrito</h3>
+      <ul id="cartList" class="cart"></ul>
+      <div id="cartTotal" class="total-box">Total: Bs 0.00</div>
+      <div class="cart-actions"><button class="btn-ghost" data-cart="clear">Vaciar</button><button class="btn-buy" data-cart="pay">Ir a pagar</button></div>
+    </section>
+  </aside>
+  <section class="panel log-panel">
+    <div class="log-head"><h3>📋 Bitácora de Eventos en Tiempo Real</h3>
+      <div class="log-actions"><button class="btn-ghost" id="btnDescargar">⬇ Descargar .txt</button><button class="btn-ghost" id="btnLimpiar">🗑 Limpiar</button></div>
+    </div>
+    <div id="logFilters" class="chips">
+      <button class="chip active" data-filter="TODOS">Todos <i>0</i></button>
+      <button class="chip" data-filter="CLICK">click <i>0</i></button>
+      <button class="chip" data-filter="DBLCLICK">dblclick <i>0</i></button>
+      <button class="chip" data-filter="KEYUP">keyup <i>0</i></button>
+      <button class="chip" data-filter="CHANGE">change <i>0</i></button>
+      <button class="chip" data-filter="SUBMIT">submit <i>0</i></button>
+      <button class="chip" data-filter="OTROS">otros <i>0</i></button>
+    </div>
+    <div id="logOutput" class="log-box"></div>
+  </section>
+</main>
+<footer>Proyecto Diseño Web II — UPDS 2026 · Bitácora de Eventos JS Día 1 y Día 2</footer>
+<script>
+'use strict';
+const $=(s,c=document)=>c.querySelector(s),$$=(s,c=document)=>[...c.querySelectorAll(s)];
+const hora=()=>new Date().toLocaleTimeString('es-BO'),bs=n=>`Bs ${n.toFixed(2)}`,rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CATALOGO={
+ tech:{nombre:'TechZone',host:'🧑‍💻',anfitrion:'Carla',productos:[
+  {id:'t1',nombre:'Auriculares Gamer',emoji:'🎧',precio:150,descuento:50,stock:12,variantes:[{n:'Negro',extra:0},{n:'Celeste',extra:10},{n:'Rosado',extra:10}]},
+  {id:'t2',nombre:'Smartwatch Fit',emoji:'⌚',precio:220,descuento:30,stock:8,variantes:[{n:'Negro',extra:0},{n:'Plateado',extra:15}]},
+  {id:'t3',nombre:'Power Bank 20K',emoji:'🔋',precio:120,descuento:25,stock:15,variantes:[{n:'Estándar',extra:0},{n:'Carga rápida',extra:20}]}]},
+ moda:{nombre:'ModaBo',host:'💃',anfitrion:'Daniela',productos:[
+  {id:'m1',nombre:'Zapatillas Urbanas',emoji:'👟',precio:280,descuento:40,stock:10,variantes:[{n:'Talla 38',extra:0},{n:'Talla 40',extra:0},{n:'Talla 42',extra:5}]},
+  {id:'m2',nombre:'Polera Oversize',emoji:'👕',precio:90,descuento:35,stock:20,variantes:[{n:'S',extra:0},{n:'M',extra:0},{n:'L',extra:0}]},
+  {id:'m3',nombre:'Gorra Premium',emoji:'🧢',precio:60,descuento:20,stock:18,variantes:[{n:'Negro',extra:0},{n:'Blanco',extra:0},{n:'Rojo',extra:3}]}]},
+ sabor:{nombre:'SaborAndino',host:'👨‍🍳',anfitrion:'Marcelo',productos:[
+  {id:'s1',nombre:'Chocolate Orgánico',emoji:'🍫',precio:25,descuento:20,stock:40,variantes:[{n:'Barra 100 g',extra:0},{n:'Caja x6',extra:60}]},
+  {id:'s2',nombre:'Café de Yungas',emoji:'☕',precio:55,descuento:30,stock:25,variantes:[{n:'Molido 250 g',extra:0},{n:'Grano 500 g',extra:30}]},
+  {id:'s3',nombre:'Miel Pura',emoji:'🍯',precio:45,descuento:15,stock:22,variantes:[{n:'Frasco 300 g',extra:0},{n:'Frasco 600 g',extra:35}]}]}
+};
+const BOTS=['@maria_bo','@juanito.lp','@gamerSCZ','@luci_shop','@carlos77','@anita.cbba'];
+const MSGS=['¿Hacen envíos a Cochabamba? 🚚','¡Quiero el de la oferta! 🔥','¿Cuánto cuesta el envío?','Me encantó el live 😍','¿Aceptan QR?','¿Todavía hay stock?','Primera vez comprando aquí 🙌','¡Está genial el precio!'];
+const MAIN=['CLICK','DBLCLICK','KEYUP','CHANGE','SUBMIT'],TEMAS=['neon','sunset','ocean'];
+const PREV_TXT='Pasa el mouse sobre un producto… (clic derecho = ⭐ favorito, doble clic = añadir)';
+const estado={marca:'tech',carrito:[],deseos:new Set(),flashAll:[],likes:0,ventas:0,ingresos:0,siguiendo:false,segundos:0,viewers:480,ultimoHover:null,filtro:'TODOS',
+ conteo:{TODOS:0,CLICK:0,DBLCLICK:0,KEYUP:0,CHANGE:0,SUBMIT:0,OTROS:0}};
+const liveContainer=$('#liveContainer'),stage=$('#stage'),heartsLayer=$('#hearts'),offersBox=$('#offers'),previewBox=$('#preview'),
+ chatBox=$('#chatBox'),chatInput=$('#chatInput'),charCount=$('#charCount'),checkoutPanel=$('#checkoutPanel'),orderForm=$('#orderForm'),
+ productSelect=$('#productSelect'),variantSelect=$('#variantSelect'),qtyInput=$('#qty'),userInput=$('#userTikTok'),phoneInput=$('#phone'),
+ totalBox=$('#totalBox'),formMsg=$('#formMsg'),ordersList=$('#ordersList'),cartPanel=$('#cartPanel'),cartList=$('#cartList'),cartTotal=$('#cartTotal'),logOutput=$('#logOutput');
+
+/* ===== Bitácora ===== */
+const grupoDe=t=>MAIN.includes(t)?t:'OTROS';
+function logEvent(tipo,msg){
+  const row=document.createElement('div');
+  row.className=`log-row t-${tipo.toLowerCase()}`;row.dataset.tipo=tipo;
+  row.innerHTML=`<span class="log-time">[${hora()}]</span> <b>${tipo}</b> ${esc(msg)}`;
+  row.hidden=!(estado.filtro==='TODOS'||estado.filtro===grupoDe(tipo));
+  logOutput.prepend(row);
+  while(logOutput.children.length>150)logOutput.lastElementChild.remove();
+  estado.conteo.TODOS++;estado.conteo[grupoDe(tipo)]++;chips();
+}
+const chips=()=>$$('#logFilters .chip').forEach(c=>c.querySelector('i').textContent=estado.conteo[c.dataset.filter]);
+$('#logFilters').addEventListener('click',e=>{
+  const c=e.target.closest('[data-filter]');if(!c)return;
+  estado.filtro=c.dataset.filter;
+  $$('#logFilters .chip').forEach(x=>x.classList.toggle('active',x===c));
+  $$('.log-row',logOutput).forEach(r=>r.hidden=!(estado.filtro==='TODOS'||grupoDe(r.dataset.tipo)===estado.filtro));
+});
+$('#btnLimpiar').addEventListener('click',()=>{
+  logOutput.innerHTML='';Object.keys(estado.conteo).forEach(k=>estado.conteo[k]=0);chips();
+  logEvent('SISTEMA','Bitácora limpiada por el usuario');
+});
+$('#btnDescargar').addEventListener('click',()=>{
+  const txt=$$('.log-row',logOutput).reverse().map(r=>r.textContent.trim()).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt||'Bitácora vacía'],{type:'text/plain;charset=utf-8'}));
+  a.download='bitacora_liveboost.txt';a.click();URL.revokeObjectURL(a.href);
+  logEvent('CLICK','Descarga de la bitácora solicitada');
+});
+
+/* ===== Helpers ===== */
+const precioFinal=(p,x=0)=>p.precio*(1-p.descuento/100)+x;
+function findProducto(id){
+  for(const m of Object.values(CATALOGO)){const p=m.productos.find(x=>x.id===id);if(p)return p;}
+  return estado.flashAll.find(x=>x.id===id);
+}
+const productosActivos=()=>[...CATALOGO[estado.marca].productos,...estado.flashAll.filter(f=>f.marca===estado.marca&&f.exp>Date.now())];
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+
+/* ===== Ofertas ===== */
+function cardHTML(p){
+  return `<article class="offer${p.flash?' flash':''}${estado.deseos.has(p.id)?' wish':''}" data-prod="${esc(p.nombre)}" data-id="${p.id}" tabindex="0">
+  <span class="tag">-${p.descuento}%</span><div class="offer-emoji">${p.emoji}</div><h4>${esc(p.nombre)}</h4>
+  <p class="price"><s>${bs(p.precio)}</s> <b>${bs(precioFinal(p))}</b></p><small class="muted">Stock: ${p.stock}</small>
+  ${p.flash?`<span class="timer" data-exp="${p.exp}">⏳ --s</span>`:''}
+  <button class="btn-offer" data-action="add">🛒 Comprar en Vivo</button></article>`;
+}
+const renderOfertas=()=>offersBox.innerHTML=productosActivos().map(cardHTML).join('');
+
+/* ===== Efectos ===== */
+function corazon(x,y,emoji='❤️'){
+  const h=document.createElement('span');h.className='heart';h.textContent=emoji;
+  h.style.left=x+'px';h.style.top=y+'px';h.style.setProperty('--dx',rand(-70,70)+'px');
+  heartsLayer.appendChild(h);h.addEventListener('animationend',()=>h.remove());
+}
+function lluvia(emoji,n=8){const r=stage.getBoundingClientRect();for(let i=0;i<n;i++)setTimeout(()=>corazon(rand(20,r.width-20),r.height-30,emoji),i*90);}
+
+/* ===== Chat ===== */
+function addChat(user,texto,clase=''){
+  const d=document.createElement('div');d.className=`msg ${clase}`;
+  d.innerHTML=clase==='sys'?esc(texto):`<b>${esc(user)}:</b> ${esc(texto)}`;
+  chatBox.appendChild(d);while(chatBox.children.length>60)chatBox.firstElementChild.remove();
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
+function enviarChat(){
+  const t=chatInput.value.trim();if(!t)return;
+  addChat('Tú',t,'mio');logEvent('CHAT',`Mensaje enviado al vendedor: "${t}"`);
+  chatInput.value='';charCount.textContent='0/80';
+  setTimeout(()=>addChat(`🎙️ ${CATALOGO[estado.marca].anfitrion}`,'¡Gracias por escribir! Mira la oferta en pantalla 🔥','host'),1200);
+}
+
+/* ===== DÍA 1: delegación en #liveContainer ===== */
+liveContainer.addEventListener('click',e=>{
+  const tab=e.target.closest('[data-brand]');if(tab)return cambiarMarca(tab.dataset.brand);
+  const ac=e.target.closest('[data-action]'),card=e.target.closest('[data-prod]');
+  if(ac){
+    const a=ac.dataset.action;
+    if(a==='add'&&card){agregarAlCarrito(card.dataset.id);logEvent('CLICK',`Oferta añadida al carrito: ${card.dataset.prod}`);}
+    else if(a==='like'){estado.likes++;$('#likeCount').textContent=estado.likes;const r=stage.getBoundingClientRect();corazon(rand(40,r.width-40),r.height-40);logEvent('CLICK',`Me gusta al Live (total: ${estado.likes})`);}
+    else if(a==='follow'){estado.siguiendo=!estado.siguiendo;ac.textContent=estado.siguiendo?'✓ Siguiendo':'+ Seguir';ac.classList.toggle('on',estado.siguiendo);logEvent('CLICK',estado.siguiendo?'El espectador siguió la cuenta':'El espectador dejó de seguir');}
+    else if(a==='share'){toast('🔗 ¡Enlace del Live copiado!');logEvent('CLICK','El espectador compartió el Live');}
+    else if(a==='flash')lanzarFlash();
+    else if(a==='send')enviarChat();
+    return;
+  }
+  if(card){seleccionarProducto(card.dataset.id);logEvent('CLICK',`Producto seleccionado: ${card.dataset.prod}`);}
+});
+liveContainer.addEventListener('dblclick',e=>{
+  if(e.target.closest('button'))return;
+  const card=e.target.closest('[data-prod]');
+  if(card){agregarAlCarrito(card.dataset.id);logEvent('DBLCLICK',`Compra exprés (doble clic) en: ${card.dataset.prod}`);return;}
+  if(e.target.closest('#stage')){
+    const r=stage.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    for(let i=0;i<5;i++)setTimeout(()=>corazon(x+rand(-20,20),y),i*80);
+    estado.likes+=5;$('#likeCount').textContent=estado.likes;
+    logEvent('DBLCLICK',`Ráfaga de ❤️ lanzada a la transmisión (total: ${estado.likes})`);
+  }
+});
+liveContainer.addEventListener('keyup',e=>{
+  if(e.target.id!=='chatInput')return;
+  if(e.key==='Enter')return enviarChat();
+  logEvent('KEYUP',`Tecleando mensaje: "${e.target.value}"`);
+});
+liveContainer.addEventListener('keydown',e=>{
+  if(e.target.id==='chatInput'&&e.key==='Escape'){e.target.value='';charCount.textContent='0/80';logEvent('KEYDOWN','Chat limpiado con la tecla Escape');}
+  if(e.target.matches('[data-prod]')&&e.key==='Enter'){agregarAlCarrito(e.target.dataset.id);logEvent('KEYDOWN',`Producto añadido con teclado: ${e.target.dataset.prod}`);}
+});
+liveContainer.addEventListener('input',e=>{if(e.target.id==='chatInput')charCount.textContent=`${e.target.value.length}/80`;});
+liveContainer.addEventListener('mouseover',e=>{
+  const card=e.target.closest('[data-prod]'),id=card?card.dataset.id:null;
+  if(id===estado.ultimoHover)return;estado.ultimoHover=id;
+  if(card){const p=findProducto(id);previewBox.innerHTML=`${p.emoji} <b>${esc(p.nombre)}</b> — ${bs(precioFinal(p))} · ${p.variantes.length} variantes · stock ${p.stock}`;logEvent('MOUSE',`El cursor pasó sobre: ${p.nombre}`);}
+  else previewBox.textContent=PREV_TXT;
+});
+liveContainer.addEventListener('contextmenu',e=>{
+  const card=e.target.closest('[data-prod]');if(!card)return;
+  e.preventDefault();const id=card.dataset.id;
+  estado.deseos.has(id)?estado.deseos.delete(id):estado.deseos.add(id);
+  card.classList.toggle('wish',estado.deseos.has(id));
+  logEvent('CONTEXT',`${estado.deseos.has(id)?'⭐ Favorito añadido':'Favorito quitado'}: ${card.dataset.prod}`);
+});
+liveContainer.addEventListener('focusin',e=>{if(e.target.id==='chatInput')logEvent('FOCUS','El espectador entró al cuadro de chat');});
+liveContainer.addEventListener('focusout',e=>{if(e.target.id==='chatInput')logEvent('FOCUS','El espectador salió del cuadro de chat');});
+
+/* ===== Marcas y ofertas relámpago ===== */
+function cambiarMarca(k){
+  if(!CATALOGO[k]||k===estado.marca)return;
+  estado.marca=k;const m=CATALOGO[k];
+  $$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.brand===k));
+  $('#hostName').textContent=`${m.nombre} • Live con ${m.anfitrion}`;$('#hostEmoji').textContent=m.host;
+  renderOfertas();llenarProductos();addChat('',`📺 Ahora en vivo: ${m.nombre}`,'sys');
+  logEvent('CLICK',`Cambio de empresa en el Live: ${m.nombre}`);
+}
+function lanzarFlash(){
+  if(productosActivos().some(p=>p.flash))return toast('⚡ Ya hay una oferta relámpago activa');
+  const base=CATALOGO[estado.marca].productos,o=base[rand(0,base.length-1)];
+  const f={...o,id:'f'+Date.now(),descuento:60,stock:3,flash:true,marca:estado.marca,exp:Date.now()+30000};
+  estado.flashAll.push(f);renderOfertas();llenarProductos(productSelect.value);
+  addChat(`🎙️ ${CATALOGO[estado.marca].anfitrion}`,`¡⚡ RELÁMPAGO! ${f.nombre} al -60% solo 30 segundos`,'host');
+  logEvent('SISTEMA',`Oferta relámpago inyectada al DOM: ${f.nombre} (-60%, 30 s). La delegación sigue funcionando sin nuevos listeners`);
+}
+function tickFlash(){
+  let cambio=false;
+  $$('.timer').forEach(t=>{const r=Math.ceil((Number(t.dataset.exp)-Date.now())/1000);if(r<=0)cambio=true;else t.textContent=`⏳ ${r}s`;});
+  if(cambio){renderOfertas();llenarProductos(productSelect.value);logEvent('SISTEMA','La oferta relámpago expiró y desapareció del DOM');}
+}
+
+/* ===== Carrito ===== */
+function agregarAlCarrito(id){
+  const p=findProducto(id);if(!p)return;
+  if(p.stock<=0)return toast('😢 Producto agotado');
+  const it=estado.carrito.find(i=>i.id===id);
+  if(it){if(it.cant<p.stock)it.cant++;else return toast('Máximo de stock alcanzado');}else estado.carrito.push({id,cant:1});
+  renderCarrito();toast(`🛒 ${p.nombre} añadido`);
+}
+function renderCarrito(){
+  estado.carrito=estado.carrito.filter(i=>findProducto(i.id));
+  if(!estado.carrito.length){cartList.innerHTML='<li class="muted">Tu carrito está vacío</li>';cartTotal.textContent='Total: Bs 0.00';return;}
+  let total=0;
+  cartList.innerHTML=estado.carrito.map(i=>{const p=findProducto(i.id),s=precioFinal(p)*i.cant;total+=s;
+    return `<li><span>${p.emoji} ${esc(p.nombre)} ×${i.cant}</span><span>${bs(s)}</span><button data-remove="${i.id}" title="Quitar">✕</button></li>`;}).join('');
+  cartTotal.textContent=`Total: ${bs(total)}`;
+}
+cartPanel.addEventListener('click',e=>{
+  const rem=e.target.closest('[data-remove]'),ac=e.target.closest('[data-cart]');
+  if(rem){estado.carrito=estado.carrito.filter(i=>i.id!==rem.dataset.remove);renderCarrito();logEvent('CLICK','Producto quitado del carrito');}
+  else if(ac&&ac.dataset.cart==='clear'){estado.carrito=[];renderCarrito();logEvent('CLICK','Carrito vaciado');}
+  else if(ac&&ac.dataset.cart==='pay'){
+    if(!estado.carrito.length)return toast('Primero añade un producto 🛒');
+    const u=estado.carrito[estado.carrito.length-1];seleccionarProducto(u.id);qtyInput.value=u.cant;resumen();
+    checkoutPanel.scrollIntoView({behavior:'smooth'});logEvent('CLICK','Ir a pagar: carrito enviado al checkout');
+  }
+});
+
+/* ===== DÍA 2: checkout ===== */
+function llenarProductos(actual){
+  const l=productosActivos();
+  productSelect.innerHTML=l.map(p=>`<option value="${p.id}" ${p.stock<=0?'disabled':''}>${p.emoji} ${p.nombre}${p.flash?' ⚡':''} — ${p.stock} disp.</option>`).join('');
+  if(actual&&l.some(p=>p.id===actual))productSelect.value=actual;
+  llenarVariantes();
+}
+function llenarVariantes(){
+  const p=findProducto(productSelect.value);if(!p){variantSelect.innerHTML='';return;}
+  variantSelect.innerHTML=p.variantes.map(v=>`<option value="${v.n}">${v.n}${v.extra?` (+${bs(v.extra)})`:''}</option>`).join('');
+  qtyInput.max=p.stock;resumen();
+}
+function resumen(){
+  const p=findProducto(productSelect.value);if(!p){totalBox.textContent='Total: Bs 0.00';return 0;}
+  const v=p.variantes.find(x=>x.n===variantSelect.value)||{extra:0},c=Math.max(1,parseInt(qtyInput.value,10)||1);
+  let t=precioFinal(p,v.extra)*c;if($('input[name="pago"]:checked').value==='Tarjeta')t*=1.03;
+  totalBox.textContent=`Total: ${bs(t)}`;return t;
+}
+function seleccionarProducto(id){if(!productosActivos().some(p=>p.id===id))return;productSelect.value=id;llenarVariantes();}
+function msgForm(t,tipo){formMsg.textContent=t;formMsg.className=`form-msg ${tipo}`;formMsg.hidden=false;}
+
+checkoutPanel.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.id==='productSelect'){llenarVariantes();logEvent('CHANGE',`Producto del checkout cambiado a: ${findProducto(t.value).nombre}`);}
+  else if(t.id==='variantSelect')logEvent('CHANGE',`El cliente seleccionó variante: ${t.value}`);
+  else if(t.name==='pago')logEvent('CHANGE',`Método de pago elegido: ${t.value}`);
+  else if(t.id==='qty')logEvent('CHANGE',`Cantidad modificada: ${t.value}`);
+  resumen();
+});
+checkoutPanel.addEventListener('input',e=>{if(e.target.id==='qty')resumen();});
+userInput.addEventListener('blur',()=>{const v=userInput.value.trim();if(v&&!v.startsWith('@'))userInput.value='@'+v;});
+
+orderForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const p=findProducto(productSelect.value),usuario=userInput.value.trim(),tel=phoneInput.value.trim(),
+   cant=parseInt(qtyInput.value,10),variante=variantSelect.value,pago=$('input[name="pago"]:checked').value,err=[];
+  if(!/^@[\w.]{3,}$/.test(usuario))err.push('El usuario debe empezar con @ y tener mínimo 3 caracteres.');
+  if(!/^[67]\d{7}$/.test(tel))err.push('El celular debe tener 8 dígitos y empezar con 6 o 7.');
+  if(!p)err.push('Selecciona un producto.');
+  else if(isNaN(cant)||cant<1)err.push('La cantidad mínima es 1.');
+  else if(cant>p.stock)err.push(`Solo quedan ${p.stock} unidades.`);
+  if(err.length){msgForm(err.join(' '),'error');logEvent('SUBMIT',`Pedido rechazado: ${err[0]}`);return;}
+  const total=resumen();
+  p.stock-=cant;estado.ventas++;estado.ingresos+=total;
+  $('#salesStat').textContent=`Ventas del live: ${estado.ventas} · ${bs(estado.ingresos)}`;
+  if(ordersList.querySelector('.muted'))ordersList.innerHTML='';
+  const li=document.createElement('li');
+  li.innerHTML=`<span>🎉 ${esc(usuario)} — ${p.emoji} ${esc(p.nombre)} (${esc(variante)}) ×${cant}</span><b>${bs(total)}</b>`;
+  ordersList.prepend(li);
+  estado.carrito=estado.carrito.filter(i=>i.id!==p.id);renderCarrito();renderOfertas();
+  addChat('',`🎉 ${usuario} acaba de comprar ${p.nombre}`,'sys');lluvia('🎉',10);
+  logEvent('SUBMIT',`COMPRA_EXITOSA 🎉 Pedido confirmado para ${usuario} (${variante}) ×${cant} — ${pago} — ${bs(total)}`);
+  msgForm('✅ ¡Pedido confirmado! Te contactaremos por WhatsApp.','ok');
+  orderForm.reset();
+});
+orderForm.addEventListener('reset',()=>setTimeout(()=>llenarProductos(),0));
+
+/* ===== Temas ===== */
+$('#themeBtn').addEventListener('click',()=>{
+  const s=TEMAS[(TEMAS.indexOf(document.body.dataset.theme)+1)%TEMAS.length];
+  document.body.dataset.theme=s;try{localStorage.setItem('liveboost-tema',s);}catch(_){}
+  logEvent('CLICK',`Tema de colores cambiado a: ${s}`);
+});
+
+/* ===== Simulación del Live ===== */
+const reloj=s=>[Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(n=>String(n).padStart(2,'0')).join(':');
+setInterval(()=>{estado.segundos++;$('#liveClock').textContent=`⏱ ${reloj(estado.segundos)}`;tickFlash();},1000);
+setInterval(()=>{estado.viewers=Math.max(120,estado.viewers+rand(-12,25));$('#viewers').textContent=`👁 ${estado.viewers.toLocaleString('es-BO')}`;},3000);
+setInterval(()=>addChat(BOTS[rand(0,BOTS.length-1)],MSGS[rand(0,MSGS.length-1)]),5000);
+setInterval(lanzarFlash,60000);
+
+(function init(){
+  try{const t=localStorage.getItem('liveboost-tema');if(t&&TEMAS.includes(t))document.body.dataset.theme=t;}catch(_){}
+  const m=CATALOGO[estado.marca];
+  $('#hostName').textContent=`${m.nombre} • Live con ${m.anfitrion}`;$('#viewers').textContent=`👁 ${estado.viewers}`;previewBox.textContent=PREV_TXT;
+  renderOfertas();llenarProductos();renderCarrito();
+  addChat('','🔴 ¡Bienvenidos al Live de LiveBoost Bolivia!','sys');
+  logEvent('SISTEMA','Bitácora iniciada: escuchando eventos con delegación en #liveContainer');
+})();
+</script>
+</body>
+</html>
